@@ -1,0 +1,34 @@
+use dioxus::prelude::*;
+
+const SVG_DATA: &str = r#"<path d="M128 352.576V352a288 288 0 0 1 491.072-204.224 192 192 0 0 1 274.24 204.48 64 64 0 0 1 57.216 74.24C921.6 600.512 850.048 710.656 736 756.992V800a96 96 0 0 1-96 96H384a96 96 0 0 1-96-96v-43.008c-114.048-46.336-185.6-156.48-214.528-330.496A64 64 0 0 1 128 352.64zm64-.576h64a160 160 0 0 1 320 0h64a224 224 0 0 0-448 0m128 0h192a96 96 0 0 0-192 0m439.424 0h68.544A128.256 128.256 0 0 0 704 192c-15.36 0-29.952 2.688-43.52 7.616 11.328 18.176 20.672 37.76 27.84 58.304A64.128 64.128 0 0 1 759.424 352M672 768H352v32a32 32 0 0 0 32 32h256a32 32 0 0 0 32-32zm-342.528-64h365.056c101.504-32.64 165.76-124.928 192.896-288H136.576c27.136 163.072 91.392 255.36 192.896 288"/>"#;
+        
+#[component]
+/// `Food`
+/// # Example
+/// ```rust
+/// use dioxus::prelude::*;
+/// 
+/// rsx! {
+///    div {
+///        Food {
+///            size: "16px".to_string(), // The size of the icon: size * size
+///            color: "black".to_string(), // The svg fill color
+///        }
+///    }
+///}
+/// ```
+pub fn Food(size: Option<String>, color: Option<String>) -> Element {
+    let size = size.unwrap_or("1em".to_string());
+    let color = color.unwrap_or("currentColor".to_string());
+
+    rsx! {
+        svg {
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "{size}",
+            height: "{size}",
+            fill: color,
+            view_box: "0 0 1024 1024",
+            dangerous_inner_html: SVG_DATA
+        }
+    }
+}
