@@ -1,8 +1,8 @@
 [package]
 name = "dxc-icons"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
-exclude = ["assets/**", "preview/**"]
+exclude = ["assets/**"]
 
 [dependencies]
 dioxus = { version = "0.6.3", features = ["fullstack"] }

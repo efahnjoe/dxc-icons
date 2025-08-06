@@ -1,19 +1,22 @@
 use regex::Regex;
 use std::fs;
+use std::env;
 use std::path::Path;
 
 const ICONS_DIR: &str = "assets/svg";
-const OUTPUT_DIR: &str = "src/icons";
+const OUTPUT_DIR: &str = "src/generat";
 
 fn main() {
     println!("cargo:rerun-if-changed={}", ICONS_DIR);
     println!("cargo:rerun-if-changed=build.rs");
 
-    let out_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-    let icons_path = Path::new(&out_dir).join(ICONS_DIR);
-    let output_path = Path::new(&out_dir).join(OUTPUT_DIR);
+    // let out_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let root_path = env::var("CARGO_MANIFEST_DIR").expect("Failed to get current directory");
+    let out_dir = env::var("OUT_DIR").expect("OUT_DIR not set");
+    let icons_path = Path::new(&root_path).join(ICONS_DIR);
+    let output_path = Path::new(&out_dir);
 
-    // create output dir
+    // Create output dir
     fs::create_dir_all(&output_path).unwrap();
     let mut mod_file = String::new();
     mod_file.push_str("// Auto-generated. Do not edit.\n\n");
@@ -29,11 +32,11 @@ fn main() {
 
             let content = fs::read_to_string(&path).unwrap();
 
-            // 提取 SVG 标签内容（去头去尾）
+            // Extract SVG tag content (remove the head and tail)
             let inner = extract_svg_content(&content);
             let fn_name = to_pascal_case(stem);
 
-            // 生成 Rust 组件代码
+            // Generate Dioxus component
             let component_code = format!(
                 r##"use dioxus::prelude::*;
 
@@ -70,7 +73,6 @@ pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
     }}
 }}
 "##,
-                // inner, fn_name, fn_name, fn_name,
             );
 
             fs::write(output_file, component_code).unwrap();
@@ -83,63 +85,47 @@ pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
     fs::write(output_path.join("mod.rs"), mod_file).unwrap();
 }
 
+/// Check if a string is a reserved Rust keyword
+fn is_reserved_keyword(word: &str) -> bool {
+    matches!(
+        word,
+        "box" | "type" | "impl" | "let" | "fn" | "mod" | "pub" | "use" | "struct" | "enum"
+            | "trait" | "match" | "if" | "else" | "loop" | "while" | "for" | "in" | "as" | "where"
+            | "self" | "super" | "async" | "await" | "dyn" | "move" | "become" | "do"
+    )
+}
+
+/// Convert a string to a valid Rust module name.
+/// 
+/// Replaces hyphens with underscores and prefixes reserved keywords with "icon_".
+/// 
+/// e.g. "alarm-clock" -> "alarm_clock", "type" -> "icon_type"
 fn to_rust_module_name(name: &str) -> String {
     let name_lower = name.replace('-', "_").to_lowercase();
 
-    match name_lower.as_str() {
-        "box" | "type" | "impl" | "let" | "fn" | "mod" | "pub" | "use" | "struct" | "enum"
-        | "trait" | "match" | "if" | "else" | "loop" | "while" | "for" | "in" | "as" | "where"
-        | "self" | "super" => {
-            format!("icon_{}", name)
-        }
-        _ => name_lower,
+    if is_reserved_keyword(&name_lower) {
+        format!("icon_{}", name_lower)
+    } else {
+        name_lower
     }
 }
 
+/// Convert a string to PascalCase.
+/// 
+/// If the input is a reserved keyword, it is prefixed with "icon_".
+/// 
+/// e.g. "alarm-clock" -> "AlarmClock", "type" -> "IconType"
 fn to_pascal_case(name: &str) -> String {
-    let name = if is_reserved_keyword(name) {
+    let processed = if is_reserved_keyword(name) {
         format!("icon_{}", name)
     } else {
         name.to_string()
     };
 
-    to_pascal_case_inner(&name)
+    to_pascal_case_inner(&processed)
 }
 
-fn is_reserved_keyword(word: &str) -> bool {
-    matches!(
-        word,
-        "box"
-            | "type"
-            | "impl"
-            | "let"
-            | "fn"
-            | "mod"
-            | "pub"
-            | "use"
-            | "struct"
-            | "enum"
-            | "trait"
-            | "match"
-            | "if"
-            | "else"
-            | "loop"
-            | "while"
-            | "for"
-            | "in"
-            | "as"
-            | "where"
-            | "self"
-            | "super"
-            | "async"
-            | "await"
-            | "dyn"
-            | "move"
-            | "become"
-            | "do"
-    )
-}
-
+/// Helper: Convert a string to PascalCase (no safety checks)
 fn to_pascal_case_inner(s: &str) -> String {
     s.split(|c: char| c == '-' || c == '_')
         .flat_map(|part| {
@@ -153,6 +139,7 @@ fn to_pascal_case_inner(s: &str) -> String {
         .collect()
 }
 
+/// Clean the SVG file
 fn extract_svg_content(svg: &str) -> String {
     let svg = svg
         .replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "")
@@ -170,12 +157,11 @@ fn extract_svg_content(svg: &str) -> String {
         &svg
     };
 
-    // 正则匹配 fill="currentColor" 的 path 标签（支持单引号、双引号、空格）
+    // Regular expression matching the path tag with fill="currentColor"
     let re = Regex::new(r#"<path([^>]*?)\s+fill\s*=\s*["']currentColor["']([^>]*)"#).unwrap();
 
-    // 移除这些 path 标签
+    // Remove the fill="currentColor" attribute
     let cleaned_content = re.replace_all(content, "<path$1$2").to_string();
 
     cleaned_content.trim().to_string()
-    // content.trim().to_string()
 }
