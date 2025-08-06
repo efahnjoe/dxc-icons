@@ -4,7 +4,6 @@ use std::env;
 use std::path::Path;
 
 const ICONS_DIR: &str = "assets/svg";
-const OUTPUT_DIR: &str = "src/generat";
 
 fn main() {
     println!("cargo:rerun-if-changed={}", ICONS_DIR);
