@@ -2,7 +2,7 @@
 name = "dxc-icons"
 version = "0.1.1"
 edition = "2021"
-exclude = ["assets/**", ".cargo/**", ".github/**"]
+exclude = [".cargo/**", ".github/**"]
 
 [dependencies]
 dioxus = { version = "0.6.3", features = ["fullstack"] }

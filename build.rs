@@ -9,8 +9,7 @@ fn main() {
     println!("cargo:rerun-if-changed={}", ICONS_DIR);
     println!("cargo:rerun-if-changed=build.rs");
 
-    // let out_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let root_path = env::var("CARGO_MANIFEST_DIR").expect("Failed to get current directory");
+    let root_path = env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
     let out_dir = env::var("OUT_DIR").expect("OUT_DIR not set");
     let icons_path = Path::new(&root_path).join(ICONS_DIR);
     let output_path = Path::new(&out_dir);
