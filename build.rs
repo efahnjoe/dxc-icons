@@ -1,4 +1,5 @@
 use regex::Regex;
+use std::collections::HashSet;
 use std::fs;
 use std::env;
 use std::path::Path;
@@ -13,6 +14,8 @@ fn main() {
     let out_dir = env::var("OUT_DIR").expect("OUT_DIR not set");
     let icons_path = Path::new(&root_path).join(ICONS_DIR);
     let output_path = Path::new(&out_dir);
+
+    let mut icons_collection:HashSet<String> = HashSet::new();
 
     // Create output dir
     fs::create_dir_all(&output_path).unwrap();
@@ -76,8 +79,18 @@ pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
             fs::write(output_file, component_code).unwrap();
             mod_file.push_str(&format!("pub mod {};\n", module_name));
             mod_file.push_str(&format!("pub use {}::{};\n", module_name, fn_name));
+            icons_collection.insert(fn_name);
         }
     }
+
+    // Create a collection of modules name
+    let joined_unordered: String = icons_collection.iter()
+        .map(|s| format!("\"{}\"", s))
+        .collect::<Vec<String>>()
+        .join(", ");
+    let icons_collection_set = format!("pub static ICONS_COLLECTION: &[&str] = &[{}];\n", &joined_unordered);
+
+    mod_file.push_str(&icons_collection_set);
 
     // write to mod.rs
     fs::write(output_path.join("mod.rs"), mod_file).unwrap();

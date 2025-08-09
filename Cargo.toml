@@ -1,11 +1,11 @@
 [package]
 name = "dxc-icons"
-version = "0.1.1"
+version = "0.1.2"
 license = "MIT"
 authors = ["efahnjoe <efahnjoe@outlook.com>"]
 description = "Dioxus Icons"
 repository = "https://github.com/efahnjoe/dxc-icons"
-keywords = ["dx-component", "component", "icons", "svg","dioxus"]
+keywords = ["dx-component", "component", "icons", "svg", "dioxus"]
 homepage = "https://github.com/efahnjoe/dxc-icons"
 readme = "README.md"
 edition = "2021"
