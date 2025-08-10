@@ -77,7 +77,7 @@ pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
             );
 
             fs::write(output_file, component_code).unwrap();
-            mod_file.push_str(&format!("pub mod {};\n", module_name));
+            mod_file.push_str(&format!("mod {};\n", module_name));
             mod_file.push_str(&format!("pub use {}::{};\n", module_name, fn_name));
             icons_collection.insert(fn_name);
         }
@@ -97,12 +97,14 @@ pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
 }
 
 /// Check if a string is a reserved Rust keyword
+/// 
+/// dioxus keywords: `document`
 fn is_reserved_keyword(word: &str) -> bool {
     matches!(
         word,
         "box" | "type" | "impl" | "let" | "fn" | "mod" | "pub" | "use" | "struct" | "enum"
             | "trait" | "match" | "if" | "else" | "loop" | "while" | "for" | "in" | "as" | "where"
-            | "self" | "super" | "async" | "await" | "dyn" | "move" | "become" | "do"
+            | "self" | "super" | "async" | "await" | "dyn" | "move" | "become" | "do" | "document"
     )
 }
 
