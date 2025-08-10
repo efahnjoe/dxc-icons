@@ -43,7 +43,6 @@ fn main() {
 
 const SVG_DATA: &str = r#"{inner}"#;
         
-#[component]
 /// `{fn_name}`
 /// # Example
 /// ```rust
@@ -58,6 +57,7 @@ const SVG_DATA: &str = r#"{inner}"#;
 ///    }}
 ///}}
 /// ```
+#[component]
 pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
     let size = size.unwrap_or("1em".to_string());
     let color = color.unwrap_or("currentColor".to_string());
@@ -91,6 +91,25 @@ pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
     let icons_collection_set = format!("pub static ICONS_COLLECTION: &[&str] = &[{}];\n", &joined_unordered);
 
     mod_file.push_str(&icons_collection_set);
+
+    let mut spawn_icon_body = String::new();
+    spawn_icon_body.push_str("/// Spawn an icon by name\n");
+    spawn_icon_body.push_str("/// Returns `None` if icon not found\n");
+    spawn_icon_body.push_str("pub fn spawn_icon(name: &str) -> Option<Element> {\n");
+    spawn_icon_body.push_str("    match name {\n");
+
+    let mut sorted_icons: Vec<_> = icons_collection.iter().collect();
+    sorted_icons.sort();
+
+    for icon_name in sorted_icons {
+        spawn_icon_body.push_str(&format!(
+            "        \"{icon_name}\" => Some(rsx!({icon_name} {{}})),\n"
+        ));
+    }
+    spawn_icon_body.push_str("        _ => None,\n");
+    spawn_icon_body.push_str("    }\n");
+    spawn_icon_body.push_str("}\n\n");
+    mod_file.push_str(&spawn_icon_body);
 
     // write to mod.rs
     fs::write(output_path.join("mod.rs"), mod_file).unwrap();

@@ -26,7 +26,15 @@ cargo add dxc-icons
 
 ## Usage
 
-`Note: Since 'Box' is a keyword in Rust, please use 'IconBox'.`
+**Since 'Box' is a keyword in Rust, please use 'IconBox'.**
+
+**'Document' is a keyword in Dioxus, please use 'IconDocument'.**
+
+For a better experience, it can be used in conjunction with `dxc` - our UI component library.
+
+ - Github: [https://github.com/efahnjoe/dxc](https://github.com/efahnjoe/dxc)
+
+ - Crate: [https://crates.io/crates/dxc](https://crates.io/crates/dxc)
 
 ### API
 
@@ -46,6 +54,7 @@ fn App() -> Element {
   Div {
     Plus {}
     IconBox {}
+    IconDocument {}
   }
 }
 ```

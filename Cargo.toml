@@ -1,18 +1,37 @@
 [package]
 name = "dxc-icons"
-version = "0.1.3"
+version = "0.1.4"
 license = "MIT"
 authors = ["efahnjoe <efahnjoe@outlook.com>"]
-description = "Dioxus Icons"
+description = "Dioxus component library with over 290 exquisite icons"
 repository = "https://github.com/efahnjoe/dxc-icons"
 keywords = ["dx-component", "component", "icons", "svg", "dioxus"]
 homepage = "https://github.com/efahnjoe/dxc-icons"
 readme = "README.md"
 edition = "2021"
-exclude = [".cargo/**", ".github/**"]
+exclude = [".cargo/**", ".github/**", ".vscode/**"]
 
 [dependencies]
 dioxus = { version = "0.6.3", features = ["fullstack"] }
 
 [build-dependencies]
 regex = "1.11.1"
+
+[[example]]
+name = "icons"
+path = "examples/icons.rs"
+
+[features]
+default = ["web"]
+web = ["dioxus/web"]
+server = ["dioxus/server"]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
