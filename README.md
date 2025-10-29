@@ -40,8 +40,8 @@ For a better experience, it can be used in conjunction with `dxc` - our UI compo
 
 | Name | Type | Description | Default |
 | --- | --- | --- | --- |
-| size | `Option<String>` | Icon size | `"1em"` |
-| color | `Option<String>` | Svg fill color | `"currentColor"` |
+| size | `Option<&'static str>` | Icon size | `"1rem"` |
+| color | `Option<&'static str>` | Svg fill color | `"currentColor"` |
 
 ### Basic usage examples
 
