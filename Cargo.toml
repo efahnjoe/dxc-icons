@@ -1,6 +1,6 @@
 [package]
 name = "dxc-icons"
-version = "0.1.4"
+version = "0.2.0"
 license = "MIT"
 authors = ["efahnjoe <efahnjoe@outlook.com>"]
 description = "Dioxus component library with over 290 exquisite icons"
