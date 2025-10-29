@@ -51,16 +51,16 @@ const SVG_DATA: &str = r#"{inner}"#;
 /// rsx! {{
 ///    div {{
 ///        {fn_name} {{
-///            size: "16px".to_string(), // The size of the icon: size * size
-///            color: "black".to_string(), // The svg fill color
+///            size: "16px", // The size of the icon: size * size
+///            color: "black", // The svg fill color
 ///        }}
 ///    }}
 ///}}
 /// ```
 #[component]
-pub fn {fn_name}(size: Option<String>, color: Option<String>) -> Element {{
-    let size = size.unwrap_or("1em".to_string());
-    let color = color.unwrap_or("currentColor".to_string());
+pub fn {fn_name}(size: Option<&'static str>, color: Option<&'static str>) -> Element {{
+    let size = size.unwrap_or("1rem");
+    let color = color.unwrap_or("currentColor");
 
     rsx! {{
         svg {{

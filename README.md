@@ -65,8 +65,8 @@ fn App() -> Element {
 rsx! {
     Div {
         Plus {
-            size: "16px".to_string(), // The size of the icon: size * size
-            color: "black".to_string(), // The svg fill color
+            size: "16px", // The size of the icon: size * size
+            color: "black", // The svg fill color
         }
     }
 }
